@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# previously run as cronjob on wllf043
+# crontab -e (to see existing cron job and edit)
+# SHELL=/bin/bash
+# */10 * * * * /users/global/cmt/ASCAT/HSAF/SSA_auto_code/cron_ASCAT.job>/dev/null 2>&1
+#
+# note all paths (in scripts and in fortran executable) must not be relative
+#
+
+ source /etc/profile.d/conda.sh
+ conda activate py37
+
+  YEAR=`date -u +"%Y"`
+  MONTH=`date -u +"%m"`
+  DAY=`date -u +"%d"`
+ # /home/stewells/AfricaNowcasting/fromChris/ascat_code/hsaf_data_copy_satdev
+ /mnt/users/global/cmt/ASCAT/HSAF/SSA_auto_code/hsaf_data_copy
+
+  python /mnt/users/global/cmt/ASCAT/HSAF/SSA_auto_code/buf2netcdf_D.py $YEAR$MONTH$DAY B
+  python /mnt/users/global/cmt/ASCAT/HSAF/SSA_auto_code/buf2netcdf_D.py $YEAR$MONTH$DAY C
+  python //users/global/cmt/ASCAT/HSAF/SSA_auto_code/buf2netcdf_A.py $YEAR$MONTH$DAY B
+  python /users/global/cmt/ASCAT/HSAF/SSA_auto_code/buf2netcdf_A.py $YEAR$MONTH$DAY C
+
+  mkdir -p /users/global/cmt/ASCAT/HSAF/NRT_daily_anomalies/$YEAR$MONTH
+  /users/global/cmt/ASCAT/HSAF/SSA_auto_code/mk_ASCAT_anomalies $YEAR$MONTH$DAY
+
+
